@@ -1,0 +1,25 @@
+galaxy_info:
+  author: Coopdevs
+  description: "MailHog (with basic auth) for Linux"
+  company: "Coopdevs Treball SCCL"
+  license: "license (BSD, MIT)"
+  min_ansible_version: "1.8"
+  platforms:
+    - name: EL
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+  galaxy_tags:
+    - development
+    - web
+    - system
+    - mail
+    - mailhog
+dependencies: 
+    - role: geerlingguy.mailhog
+  

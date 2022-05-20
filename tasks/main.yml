@@ -1,0 +1,18 @@
+---
+- name: "Prepare Mailhog"
+  apt:
+    name: build-essential
+    state: present
+  when: mailhog_enabled
+  tags: [mailhog]
+
+- name: "Enable Mailhog"
+  include_role:
+    name: geerlingguy.mailhog
+  when: mailhog_enabled
+  tags: [mailhog]
+
+- name: "Configure basic auth"
+  include_tasks: basic_auth.yml
+  when: mailhog_basic_auth_enabled
+  tags: [mailhog, basic-auth]

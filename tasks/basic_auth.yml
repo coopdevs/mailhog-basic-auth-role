@@ -1,0 +1,47 @@
+---
+- name: "Generate basic auth for Mailhog"
+  shell: >
+   echo {{ mailhog_basic_auth_user }}:$({{ mailhog_install_dir }}/mailhog
+   bcrypt {{ mailhog_basic_auth_pass }})
+   > {{ mailhog_basic_auth_file  }}
+  become: true
+  when: mailhog_basic_auth_enabled
+  tags: [mailhog, basic-auth]
+
+- name: "Configure basic auth for MailHog - SystemD"
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/system/mailhog.service
+    state: present
+    regexp: '^ExecStart'
+    line: >
+     ExecStart={{ mailhog_install_dir }}/mailhog
+     -auth-file={{ mailhog_basic_auth_file  }}
+  become: true
+  when:
+    - mailhog_basic_auth_enabled
+    - "ansible_service_mgr == 'systemd'"
+  notify:
+    - reload systemd
+  tags: [mailhog, basic-auth]
+
+- name: "Configure basic auth for MailHog [init.d]"
+  ansible.builtin.lineinfile:
+    path: /etc/init.d/mailhog
+    state: present
+    regexp: '^\$BIN'
+    line: >
+     $BIN={{ mailhog_install_dir }}/mailhog
+     -auth-file={{ mailhog_basic_auth_file }}
+  become: true
+  when:
+    - mailhog_basic_auth_enabled
+    - "ansible_service_mgr != 'systemd'"
+  tags: [mailhog, basic-auth]
+
+- name: "Apply basic auth configuration "
+  service:
+    name: mailhog
+    state: restarted
+  when:
+    - mailhog_basic_auth_enabled
+  tags: [mailhog, basic-auth]
