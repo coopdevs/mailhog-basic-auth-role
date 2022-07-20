@@ -6,6 +6,14 @@
   when: mailhog_enabled
   tags: [mailhog]
 
+- name: "Render enviroment variables"
+  template:
+    src: "mailhog.env.j2"
+    dest:  "{{ mailhog_install_dir }}/mailhog/env"
+  when:
+    - mailhog_enviroment_vars is defined
+  tags: [mailhog, env]
+
 - name: "Enable Mailhog"
   include_role:
     name: geerlingguy.mailhog
@@ -16,3 +24,4 @@
   include_tasks: basic_auth.yml
   when: mailhog_basic_auth_enabled
   tags: [mailhog, basic-auth]
+

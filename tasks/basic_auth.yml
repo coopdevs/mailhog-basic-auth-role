@@ -24,6 +24,20 @@
     - reload systemd
   tags: [mailhog, basic-auth]
 
+- name: "Configure EnvironmentFile for MailHog - SystemD"
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/system/mailhog.service
+    state: present
+    line: >
+     EnvironmentFile={{ mailhog_install_dir }}/mailhog/env
+  become: true
+  when:
+    - mailhog_basic_auth_enabled
+    - "ansible_service_mgr == 'systemd'"
+  notify:
+    - reload systemd
+  tags: [mailhog, basic-auth]
+
 - name: "Configure basic auth for MailHog [init.d]"
   ansible.builtin.lineinfile:
     path: /etc/init.d/mailhog

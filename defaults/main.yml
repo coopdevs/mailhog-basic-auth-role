@@ -3,6 +3,10 @@ mailhog_enabled: false
 mailhog_install_dir: /opt/mailhog
 mailhog_version: 1.0.1
 mailhog_basic_auth_enabled: false
-mailhog_basic_auth_user:
-mailhog_basic_auth_pass:
-mailhog_basic_auth_file:
+mailhog_basic_auth_user: odoo
+mailhog_basic_auth_pass: mailhog
+mailhog_basic_auth_file: "{{ mailhog_install_dir }}/auth"
+mailhog_enviroment_vars:
+ - "MH_UI_WEB_PATH=mailhog"
+ - "MH_AUTH_FILE={{ mailhog_install_dir }}/auth"
+ - "MH_STORAGE=memory"
